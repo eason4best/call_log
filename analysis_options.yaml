@@ -1,7 +1,5 @@
 # MOZNOSTI ANALYZY KODU POVODNE ZOBRATE PRIAMO Z FLUTTER PROJEKTU NA GITHUBE
 analyzer:
-  strong-mode:
-    implicit-dynamic: false
   errors:
     # AK NEBOLI DODANE POVINNE PARAMETRE, ZOBRAZUJ TO AKO WARNING A NIE AKO HINT
     missing_required_param: warning
@@ -17,7 +15,6 @@ linter:
     - always_declare_return_types
     - always_put_control_body_on_new_line
     - always_put_required_named_parameters_first
-    - always_require_non_null_named_parameters
     - always_specify_types
     - annotate_overrides
     # NEMOZE SA ZAPNUT AK CHCEME MAT VZDY SPECIFIKOVANY TYP (always_specify_types)
@@ -44,7 +41,6 @@ linter:
     - avoid_relative_lib_imports
     - avoid_renaming_method_parameters
     - avoid_return_types_on_setters
-    - avoid_returning_null
     - avoid_returning_this
     - avoid_setters_without_getters
     - avoid_single_cascade_in_expression_statements
