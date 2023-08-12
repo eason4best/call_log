@@ -10,7 +10,6 @@ import android.os.Build;
 import android.provider.CallLog;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -32,8 +31,6 @@ import java.util.List;
 @TargetApi(Build.VERSION_CODES.M)
 public class CallLogPlugin implements FlutterPlugin, ActivityAware, MethodCallHandler, PluginRegistry.RequestPermissionsResultListener {
 
-    private static final String TAG = "flutter/CALL_LOG";
-    private static final String ALREADY_RUNNING = "ALREADY_RUNNING";
     private static final String PERMISSION_NOT_GRANTED = "PERMISSION_NOT_GRANTED";
     private static final String INTERNAL_ERROR = "INTERNAL_ERROR";
     private static final String METHOD_GET = "get";
@@ -63,7 +60,6 @@ public class CallLogPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
     private Context ctx;
 
     private void init(BinaryMessenger binaryMessenger, Context applicationContext) {
-        Log.d(TAG, "init. Messanger:" + binaryMessenger + " Context:" + applicationContext);
         final MethodChannel channel = new MethodChannel(binaryMessenger, "sk.fourq.call_log");
         channel.setMethodCallHandler(this);
         ctx = applicationContext;
@@ -71,14 +67,12 @@ public class CallLogPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        Log.d(TAG, "onAttachedToEngine");
         init(flutterPluginBinding.getBinaryMessenger(), flutterPluginBinding.getApplicationContext());
     }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        //NO-OP
-        Log.d(TAG, "onDetachedFromEngine");
+
     }
 
     @Override
@@ -86,22 +80,20 @@ public class CallLogPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
         this.activityPluginBinding = activityPluginBinding;
         activityPluginBinding.addRequestPermissionsResultListener(this);
         activity = activityPluginBinding.getActivity();
-        Log.d(TAG, "onAttachedToActivity");
     }
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
-        Log.d(TAG, "onDetachedFromActivityForConfigChanges");
+
     }
 
     @Override
     public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding activityPluginBinding) {
-        Log.d(TAG, "onReattachedToActivityForConfigChanges");
+
     }
 
     @Override
     public void onDetachedFromActivity() {
-        Log.d(TAG, "onDetachedFromActivity");
         if (activityPluginBinding != null) {
             activityPluginBinding.removeRequestPermissionsResultListener(this);
             activityPluginBinding = null;
@@ -110,15 +102,9 @@ public class CallLogPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
     }
 
     @Override
-    public void onMethodCall(MethodCall c, Result r) {
-        Log.d(TAG, "onMethodCall");
-        if (request != null) {
-            r.error(ALREADY_RUNNING, "Method call was cancelled. One method call is already running", null);
-        }
-
+    public void onMethodCall(@NonNull MethodCall c, @NonNull Result r) {
         request = c;
         result = r;
-
         String[] perm = {Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_PHONE_STATE};
         if (hasPermissions(perm)) {
             handleMethodCall();
@@ -132,7 +118,7 @@ public class CallLogPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
     }
 
     @Override
-    public boolean onRequestPermissionsResult(int requestCode, String[] strings, int[] grantResults) {
+    public boolean onRequestPermissionsResult(int requestCode, @NonNull String[] strings, @NonNull int[] grantResults) {
         if (requestCode == 0) {
             //CHECK IF ALL REQUESTED PERMISSIONS ARE GRANTED
             for (int grantResult : grantResults) {
@@ -169,8 +155,6 @@ public class CallLogPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
                 String name = request.argument("name");
                 String number = request.argument("number");
                 String type = request.argument("type");
-                String cachedMatchedNumber = request.argument("cachedMatchedNumber");
-                String phoneAccountId = request.argument("phoneAccountId");
 
                 List<String> predicates = new ArrayList<>();
                 generatePredicate(predicates, CallLog.Calls.DATE, OPERATOR_GT, dateFrom);
