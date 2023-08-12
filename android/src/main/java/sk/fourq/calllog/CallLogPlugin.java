@@ -112,7 +112,7 @@ public class CallLogPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
             if (activity != null) {
                 ActivityCompat.requestPermissions(activity, perm, 0);
             } else {
-                r.error("MISSING_PERMISSIONS", "Permission READ_CALL_LOG or READ_PHONE_STATE is required for plugin. Hovewer, plugin is unable to request permission because of background execution.", null);
+                result.error("MISSING_PERMISSIONS", "Permission READ_CALL_LOG or READ_PHONE_STATE is required for plugin. Hovewer, plugin is unable to request permission because of background execution.", null);
             }
         }
     }
