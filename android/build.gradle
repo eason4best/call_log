@@ -22,7 +22,6 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    namespace 'sk.fourq.calllog'
     compileSdkVersion 28
     defaultConfig {
         minSdkVersion 16
